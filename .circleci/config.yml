@@ -1,15 +1,25 @@
 version: 2.1
 
 jobs:
-  your-debug-job: # The name of your job
+  build-and-test:
     docker:
-      - image: cimg/base:stable # Use any Linux image you need
+      - image: cimg/base:stable
     steps:
       - checkout
-      # ... your other build or test steps ...
-
-      # 👇 Add this step for remote debugging
+      
+      # Your normal build/test steps can go here
+      - run:
+          name: Run tests
+          command: echo "Running tests..."
+          
+      # 👇 The sshx step for debugging
       - run:
           name: Start sshx for remote debugging
           command: |
-            curl -sSf https://sshx.io/get | sh && sshx
+            curl -sSf https://sshx.io/get | sh -s run
+
+# 👇 THIS IS THE MISSING PART
+workflows:
+  build-and-test-workflow:
+    jobs:
+      - build-and-test
